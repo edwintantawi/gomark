@@ -30,10 +30,12 @@ func (s *server) Listen(port string) {
 	// deps
 	bookmarkRepository := repository.NewBookmarkRepository(db, idGen)
 	addBookmarkUseCase := use_case.NewAddBookmarkUseCase(bookmarkRepository)
+	getBookmarksUseCase := use_case.NewGetBookmarksUseCase(bookmarkRepository)
 
 	// handler
 	panicHandler := v1.NewPanicHandler()
 	postBookmarkHandler := v1.NewPostBookmarkHandler(addBookmarkUseCase)
+	getBookmarksHandler := v1.NewGetBookmarksHandler(getBookmarksUseCase)
 
 	// middleware
 	requestLoggerMiddleware := middleware.RequestLoggerMiddleware()
@@ -44,6 +46,7 @@ func (s *server) Listen(port string) {
 
 	// routes
 	s.router.POST("/bookmarks", postBookmarkHandler.Handle)
+	s.router.GET("/bookmarks", getBookmarksHandler.Handle)
 
 	// exception handler
 	s.router.PanicHandler = panicHandler.Handle

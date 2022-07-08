@@ -10,10 +10,10 @@ import (
 )
 
 type postBookmarkHandler struct {
-	useCase bookmark.UseCase
+	useCase bookmark.AddBookmarkUseCase
 }
 
-func NewPostBookmarkHandler(useCase bookmark.UseCase) *postBookmarkHandler {
+func NewPostBookmarkHandler(useCase bookmark.AddBookmarkUseCase) *postBookmarkHandler {
 	return &postBookmarkHandler{useCase: useCase}
 }
 

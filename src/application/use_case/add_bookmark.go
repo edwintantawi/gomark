@@ -16,7 +16,7 @@ func NewAddBookmarkUseCase(bookmarkRepository bookmark.Repository) *addBookmarkU
 	}
 }
 
-func (u *addBookmarkUseCase) WithTx(txHandle *sql.Tx) bookmark.UseCase {
+func (u *addBookmarkUseCase) WithTx(txHandle *sql.Tx) bookmark.AddBookmarkUseCase {
 	u.bookmarkRepository.WithTx(txHandle)
 	return u
 }

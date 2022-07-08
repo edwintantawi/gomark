@@ -4,29 +4,16 @@ import (
 	"context"
 	"database/sql"
 	"github.com/edwintantawi/gomark/src/domain/bookmark"
+	"github.com/edwintantawi/gomark/src/test/mocks"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"testing"
 )
 
-type mockBookmarkRepository struct {
-	mock.Mock
-}
-
-func (m *mockBookmarkRepository) Add(ctx context.Context, newBookmark bookmark.New) bookmark.ID {
-	args := m.Called(ctx, newBookmark)
-	return bookmark.ID(args[0].(string))
-}
-
-func (m *mockBookmarkRepository) WithTx(txHandle *sql.Tx) bookmark.Repository {
-	args := m.Called(txHandle)
-	return args[0].(bookmark.Repository)
-}
-
 func TestAddBookmark(t *testing.T) {
 	t.Run("it should call repository WithTx and return it self", func(t *testing.T) {
 
-		bookmarkRepository := new(mockBookmarkRepository)
+		bookmarkRepository := new(mocks.MockBookmarkRepository)
 
 		bookmarkRepository.On("WithTx", mock.Anything).Return(bookmarkRepository)
 
@@ -39,7 +26,7 @@ func TestAddBookmark(t *testing.T) {
 
 	t.Run("it should call repository and return bookmark id", func(t *testing.T) {
 		ctx := context.Background()
-		bookmarkRepository := new(mockBookmarkRepository)
+		bookmarkRepository := new(mocks.MockBookmarkRepository)
 
 		newBookmark := bookmark.New{
 			Title:       "GoMark",

@@ -24,7 +24,7 @@ func (m *mockIdGen) Generate() string {
 	return args[0].(string)
 }
 
-func TestBookmarkRepositoryAdd(t *testing.T) {
+func TestBookmarkRepositoryTx(t *testing.T) {
 	db := datastore.NewPostgres()
 
 	t.Run("it should change DB to Tx and return it self", func(t *testing.T) {
@@ -39,6 +39,10 @@ func TestBookmarkRepositoryAdd(t *testing.T) {
 		assert.Equal(t, r, bookmarkRepo)
 		assert.Equal(t, bookmarkRepo.DB, txHandle)
 	})
+}
+
+func TestBookmarkRepositoryAdd(t *testing.T) {
+	db := datastore.NewPostgres()
 
 	t.Run("it should save bookmark to db and return correct bookmark id", func(t *testing.T) {
 		defer afterAll(db)
@@ -58,6 +62,28 @@ func TestBookmarkRepositoryAdd(t *testing.T) {
 		r := bookmarkRepo.Add(ctx, newBookmark)
 
 		assert.Equal(t, bookmark.ID(dummyId), r)
+	})
+
+}
+
+func TestBookmarkRepositoryGetAll(t *testing.T) {
+	ctx := context.Background()
+	db := datastore.NewPostgres()
+
+	dummyId := "1234567890"
+	idGen := new(mockIdGen)
+	idGen.On("Generate").Return(dummyId)
+
+	bookmarkRepo := NewBookmarkRepository(db, idGen)
+
+	test.AddManyBookmarks(db)
+
+	t.Run("it should return all bookmarks", func(t *testing.T) {
+		defer afterAll(db)
+
+		r := bookmarkRepo.GetAll(ctx)
+
+		assert.Equal(t, 3, len(r))
 	})
 
 }

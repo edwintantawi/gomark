@@ -35,3 +35,20 @@ func (r *bookmarkRepository) Add(ctx context.Context, newBookmark bookmark.New) 
 
 	return bookmarkId
 }
+
+func (r *bookmarkRepository) GetAll(ctx context.Context) []bookmark.Added {
+	var bookmarks []bookmark.Added
+
+	SQL := "SELECT * FROM bookmarks"
+	rows, err := r.DB.QueryContext(ctx, SQL)
+	helper.PanicError(err)
+
+	for rows.Next() {
+		b := bookmark.Added{}
+		errs := rows.Scan(&b.ID, &b.Title, &b.Description, &b.Url, &b.CreatedAt, &b.UpdatedAt)
+		helper.PanicError(errs)
+		bookmarks = append(bookmarks, b)
+	}
+
+	return bookmarks
+}

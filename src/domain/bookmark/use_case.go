@@ -5,7 +5,12 @@ import (
 	"database/sql"
 )
 
-type UseCase interface {
-	WithTx(txHandle *sql.Tx) UseCase
+type AddBookmarkUseCase interface {
+	WithTx(txHandle *sql.Tx) AddBookmarkUseCase
 	Execute(ctx context.Context, payload New) ID
+}
+
+type GetBookmarksUseCase interface {
+	WithTx(txHandle *sql.Tx) GetBookmarksUseCase
+	Execute(ctx context.Context) []Added
 }
